@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Mentoria - Mentores</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">LOGO</div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Encontrar Mentor</a></li>
+                    <li><a href="#">Seja um Mentor</a></li>
+                    <li><a href="#">Login</a></li>
+                    <li><button class="btn-primary">Cadastre-se</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="mentors-list-section">
+        <div class="container">
+            <aside class="filter-sidebar">
+                <div class="filter-group">
+                    <label for="search-name">Buscar por Nome:</label>
+                    <div class="search-input-group">
+                        <input type="text" id="search-name" placeholder="Nome do mentor">
+                        <button class="btn-search">🔍</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="specialty">Área de Especialidade:</label>
+                    <select id="specialty">
+                        <option value="">Todas</option>
+                        <option value="tecnologia">Tecnologia</option>
+                        <option value="design">Design</option>
+                        <option value="negocios">Negócios</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Habilidades:</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="python" name="skill" value="python">
+                        <label for="python">Python</label><br>
+                        <input type="checkbox" id="gestao" name="skill" value="gestao">
+                        <label for="gestao">Gestão de Projetos</label><br>
+                        <input type="checkbox" id="uiux" name="skill" value="uiux">
+                        <label for="uiux">UI/UX</label>
+                    </div>
+                </div>
+                <button class="btn-clear-filters">Limpar Filtros</button>
+            </aside>
+
+            <main class="mentors-results">
+                <h2>Exibindo 25 mentores</h2>
+                <div class="mentors-grid">
+                    <div class="mentor-card">
+                        <div class="mentor-photo"></div>
+                        <h3>Mentor Exemplo 1</h3>
+                        <p>Desenvolvedor Backend Sênior</p>
+                        <p class="mentor-summary">Especialista em Python e APIs REST.</p>
+                        <div class="mentor-tags">
+                            <span>Python</span><span>APIs</span><span>Backend</span>
+                        </div>
+                    </div>
+                    <div class="mentor-card">
+                        <div class="mentor-photo"></div>
+                        <h3>Mentor Exemplo 2</h3>
+                        <p>Designer de Produto</p>
+                        <p class="mentor-summary">Foco em usabilidade e experiência do usuário.</p>
+                        <div class="mentor-tags">
+                            <span>UI/UX</span><span>Figma</span><span>Pesquisa</span>
+                        </div>
+                    </div>
+                    <div class="mentor-card">
+                        <div class="mentor-photo"></div>
+                        <h3>Mentor Exemplo 3</h3>
+                        <p>Consultor de Negócios</p>
+                        <p class="mentor-summary">Ajuda empresas a escalar e otimizar processos.</p>
+                        <div class="mentor-tags">
+                            <span>Estratégia</span><span>Marketing</span><span>Vendas</span>
+                        </div>
+                    </div>
+                    <div class="mentor-card">
+                        <div class="mentor-photo"></div>
+                        <h3>Mentor Exemplo 4</h3>
+                        <p>Desenvolvedor Frontend</p>
+                        <p class="mentor-summary">Especialista em React e JavaScript.</p>
+                        <div class="mentor-tags">
+                            <span>React</span><span>JavaScript</span><span>Frontend</span>
+                        </div>
+                    </div>
+                    <div class="mentor-card">
+                        <div class="mentor-photo"></div>
+                        <h3>Mentor Exemplo 5</h3>
+                        <p>Analista de Dados</p>
+                        <p class="mentor-summary">Transformando dados em insights acionáveis.</p>
+                        <div class="mentor-tags">
+                            <span>SQL</span><span>Python</span><span>PowerBI</span>
+                        </div>
+                    </div>
+                    <div class="mentor-card">
+                        <div class="mentor-photo"></div>
+                        <h3>Mentor Exemplo 6</h3>
+                        <p>Especialista em Marketing Digital</p>
+                        <p class="mentor-summary">Crescimento de marcas através de estratégias digitais.</p>
+                        <div class="mentor-tags">
+                            <span>SEO</span><span>SEM</span><span>Conteúdo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pagination">
+                    <button class="btn-pagination">Anterior</button>
+                    <span>1</span>
+                    <button class="btn-pagination">Próximo</button>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="#">Sobre Nós</a></li>
+                    <li><a href="#">Contato</a></li>
+                    <li><a href="#">Termos de Serviço</a></li>
+                </ul>
+            </nav>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
