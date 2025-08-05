@@ -10,7 +10,6 @@ public class ProdutoRestController {
 
     @GetMapping("/{id}")
     public Produto getProduto(@PathVariable("id") Long id) {
-        // Simula a busca de um produto
         return new Produto(id, "Produto " + id, "Descrição do produto " + id, 100.0 * id);
     }
 
