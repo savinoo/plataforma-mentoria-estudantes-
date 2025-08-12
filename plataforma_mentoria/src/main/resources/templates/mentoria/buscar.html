@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Mentores</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Buscar Mentores</h1>
+            
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form th:action="@{/mentoria/buscar}" method="get" class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="nome" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" th:value="${param.nome}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="especialidade" class="form-label">Especialidade</label>
+                                    <select class="form-select" id="especialidade" name="especialidade">
+                                        <option value="">Todas as especialidades</option>
+                                        <option th:each="esp : ${especialidades}" th:value="${esp.id}" th:text="${esp.nome}" th:selected="${param.especialidade == esp.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="disponibilidade" class="form-label">Disponibilidade</label>
+                                    <select class="form-select" id="disponibilidade" name="disponibilidade">
+                                        <option value="">Qualquer disponibilidade</option>
+                                        <option value="SEGUNDA">Segunda-feira</option>
+                                        <option value="TERCA">Terça-feira</option>
+                                        <option value="QUARTA">Quarta-feira</option>
+                                        <option value="QUINTA">Quinta-feira</option>
+                                        <option value="SEXTA">Sexta-feira</option>
+                                        <option value="SABADO">Sábado</option>
+                                        <option value="DOMINGO">Domingo</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary">Buscar</button>
+                                    <a th:href="@{/mentoria/buscar}" class="btn btn-secondary">Limpar</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4" th:each="mentor : ${mentores}">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <img src="https://via.placeholder.com/70" class="rounded-circle me-3" alt="Foto do Mentor">
+                                <div>
+                                    <h5 class="card-title mb-1" th:text="${mentor.nome}">Nome do Mentor</h5>
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                        <span class="text-muted ms-1" th:text="${mentor.avaliacao}">4.5</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="card-subtitle mb-2 text-muted">Especialidades:</h6>
+                            <div class="mb-3">
+                                <span class="badge bg-primary me-1 mb-1" th:each="esp : ${mentor.especialidades}" th:text="${esp.nome}">Especialidade</span>
+                            </div>
+                            
+                            <p class="card-text" th:text="${mentor.sobre}">Breve descrição sobre o mentor, suas qualificações e experiências.</p>
+                            
+                            <h6 class="card-subtitle mb-2 text-muted">Disponibilidade:</h6>
+                            <ul class="list-unstyled small">
+                                <li th:each="disp : ${mentor.disponibilidades}">
+                                    <span th:text="${disp.diaSemana}">Segunda-feira</span>: 
+                                    <span th:text="${disp.horaInicio}">09:00</span> - 
+                                    <span th:text="${disp.horaFim}">11:00</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/mentoria/mentor/{id}(id=${mentor.id})}" class="btn btn-outline-primary">Ver Perfil</a>
+                                <a th:href="@{/agendamento/agendar/{id}(id=${mentor.id})}" class="btn btn-primary">Agendar Mentoria</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mensagem quando não há resultados -->
+                <div class="col-12 text-center" th:if="${#lists.isEmpty(mentores)}">
+                    <div class="alert alert-info">
+                        <p class="mb-0">Nenhum mentor encontrado com os critérios informados.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

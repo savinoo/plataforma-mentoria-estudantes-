@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Mentorias</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Histórico de Mentorias</h1>
+            
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="futuras-tab" data-bs-toggle="tab" data-bs-target="#futuras" type="button" role="tab">Agendadas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="passadas-tab" data-bs-toggle="tab" data-bs-target="#passadas" type="button" role="tab">Realizadas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="canceladas-tab" data-bs-toggle="tab" data-bs-target="#canceladas" type="button" role="tab">Canceladas</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Mentorias Agendadas -->
+                <div class="tab-pane fade show active" id="futuras" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Participante</th>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Assunto</th>
+                                            <th>Link da Reunião</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="agendamento : ${agendamentosFuturos}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Participante">
+                                                    <div>
+                                                        <div th:text="${agendamento.nomeParticipante}">Nome do Participante</div>
+                                                        <div class="text-muted small" th:text="${agendamento.emailParticipante}">email@exemplo.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td th:text="${agendamento.data}">01/01/2025</td>
+                                            <td th:text="${agendamento.horario}">14:00 - 15:00</td>
+                                            <td th:text="${agendamento.assunto}">Orientação de Carreira</td>
+                                            <td>
+                                                <a th:if="${agendamento.linkReuniao}" th:href="${agendamento.linkReuniao}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-camera-video me-1"></i> Acessar
+                                                </a>
+                                                <span th:unless="${agendamento.linkReuniao}" class="text-muted">Não disponível</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelarModal" th:attr="data-id=${agendamento.id}">Cancelar</button>
+                                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#reagendarModal" th:attr="data-id=${agendamento.id}">Reagendar</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mensagem quando não há agendamentos futuros -->
+                            <div class="text-center mt-3" th:if="${#lists.isEmpty(agendamentosFuturos)}">
+                                <p class="text-muted">Você não possui mentorias agendadas.</p>
+                                <a th:href="@{/mentoria/buscar}" class="btn btn-primary mt-2">Agendar Nova Mentoria</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mentorias Realizadas -->
+                <div class="tab-pane fade" id="passadas" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Participante</th>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Assunto</th>
+                                            <th>Avaliação</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="agendamento : ${agendamentosPassados}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Participante">
+                                                    <div>
+                                                        <div th:text="${agendamento.nomeParticipante}">Nome do Participante</div>
+                                                        <div class="text-muted small" th:text="${agendamento.emailParticipante}">email@exemplo.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td th:text="${agendamento.data}">01/01/2025</td>
+                                            <td th:text="${agendamento.horario}">14:00 - 15:00</td>
+                                            <td th:text="${agendamento.assunto}">Orientação de Carreira</td>
+                                            <td>
+                                                <div th:if="${agendamento.avaliacao}" class="text-warning">
+                                                    <i class="bi bi-star-fill" th:each="i : ${#numbers.sequence(1, agendamento.avaliacao)}"></i>
+                                                    <span class="text-muted ms-1" th:text="${agendamento.avaliacao}">5</span>
+                                                </div>
+                                                <span th:unless="${agendamento.avaliacao}" class="badge bg-secondary">Não avaliado</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a th:if="${!agendamento.avaliado && agendamento.tipoParticipante == 'MENTORADO'}" th:href="@{/feedback/avaliar/{id}(id=${agendamento.id})}" class="btn btn-sm btn-outline-warning">Avaliar</a>
+                                                    <a th:href="@{/mentoria/detalhes/{id}(id=${agendamento.id})}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mensagem quando não há agendamentos passados -->
+                            <div class="text-center mt-3" th:if="${#lists.isEmpty(agendamentosPassados)}">
+                                <p class="text-muted">Você não possui mentorias realizadas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mentorias Canceladas -->
+                <div class="tab-pane fade" id="canceladas" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Participante</th>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Assunto</th>
+                                            <th>Motivo do Cancelamento</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="agendamento : ${agendamentosCancelados}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Participante">
+                                                    <div>
+                                                        <div th:text="${agendamento.nomeParticipante}">Nome do Participante</div>
+                                                        <div class="text-muted small" th:text="${agendamento.emailParticipante}">email@exemplo.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td th:text="${agendamento.data}">01/01/2025</td>
+                                            <td th:text="${agendamento.horario}">14:00 - 15:00</td>
+                                            <td th:text="${agendamento.assunto}">Orientação de Carreira</td>
+                                            <td th:text="${agendamento.motivoCancelamento ?: 'Não informado'}">Indisponibilidade de horário</td>
+                                            <td>
+                                                <a th:href="@{/agendamento/agendar/{id}(id=${agendamento.participanteId})}" class="btn btn-sm btn-outline-primary">Agendar Novamente</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mensagem quando não há agendamentos cancelados -->
+                            <div class="text-center mt-3" th:if="${#lists.isEmpty(agendamentosCancelados)}">
+                                <p class="text-muted">Você não possui mentorias canceladas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Cancelar Agendamento -->
+            <div class="modal fade" id="cancelarModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Cancelar Agendamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Tem certeza que deseja cancelar este agendamento?</p>
+                            <form th:action="@{/agendamento/cancelar}" method="post">
+                                <input type="hidden" id="agendamentoId" name="agendamentoId">
+                                <div class="mb-3">
+                                    <label for="motivo" class="form-label">Motivo do cancelamento (opcional)</label>
+                                    <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                            <button type="button" class="btn btn-danger">Confirmar Cancelamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Reagendar -->
+            <div class="modal fade" id="reagendarModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reagendar Mentoria</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/agendamento/reagendar}" method="post">
+                                <input type="hidden" id="reagendarId" name="agendamentoId">
+                                <div class="mb-3">
+                                    <label for="novaData" class="form-label">Nova Data</label>
+                                    <input type="date" class="form-control" id="novaData" name="novaData" required min="2025-08-12">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="novoHorarioInicio" class="form-label">Novo Horário de Início</label>
+                                    <input type="time" class="form-control" id="novoHorarioInicio" name="novoHorarioInicio" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="novoHorarioFim" class="form-label">Novo Horário de Término</label>
+                                    <input type="time" class="form-control" id="novoHorarioFim" name="novoHorarioFim" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Confirmar Reagendamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

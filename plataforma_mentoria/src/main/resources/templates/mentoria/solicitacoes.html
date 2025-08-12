@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitações de Mentoria</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Solicitações de Mentoria</h1>
+            
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="pills-recebidas-tab" data-bs-toggle="pill" data-bs-target="#pills-recebidas" type="button" role="tab">Recebidas</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="pills-enviadas-tab" data-bs-toggle="pill" data-bs-target="#pills-enviadas" type="button" role="tab">Enviadas</button>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content" id="pills-tabContent">
+                                <!-- Solicitações Recebidas -->
+                                <div class="tab-pane fade show active" id="pills-recebidas" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Solicitante</th>
+                                                    <th>Data</th>
+                                                    <th>Horário</th>
+                                                    <th>Assunto</th>
+                                                    <th>Status</th>
+                                                    <th>Ações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="solicitacao : ${solicitacoesRecebidas}">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Solicitante">
+                                                            <div>
+                                                                <div th:text="${solicitacao.nomeSolicitante}">Nome do Solicitante</div>
+                                                                <div class="text-muted small" th:text="${solicitacao.emailSolicitante}">email@exemplo.com</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td th:text="${solicitacao.data}">01/01/2025</td>
+                                                    <td th:text="${solicitacao.horario}">14:00 - 15:00</td>
+                                                    <td th:text="${solicitacao.assunto}">Orientação de Carreira</td>
+                                                    <td>
+                                                        <span class="badge bg-warning" th:if="${solicitacao.status == 'PENDENTE'}">Pendente</span>
+                                                        <span class="badge bg-success" th:if="${solicitacao.status == 'APROVADA'}">Aprovada</span>
+                                                        <span class="badge bg-danger" th:if="${solicitacao.status == 'RECUSADA'}">Recusada</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" th:if="${solicitacao.status == 'PENDENTE'}">
+                                                            <button class="btn btn-sm btn-success" th:attr="data-id=${solicitacao.id}" data-bs-toggle="modal" data-bs-target="#aprovarModal">Aprovar</button>
+                                                            <button class="btn btn-sm btn-danger" th:attr="data-id=${solicitacao.id}" data-bs-toggle="modal" data-bs-target="#recusarModal">Recusar</button>
+                                                        </div>
+                                                        <div th:if="${solicitacao.status != 'PENDENTE'}">
+                                                            <a th:href="@{/mentoria/detalhes/{id}(id=${solicitacao.id})}" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- Mensagem quando não há solicitações recebidas -->
+                                    <div class="text-center mt-3" th:if="${#lists.isEmpty(solicitacoesRecebidas)}">
+                                        <p class="text-muted">Você não possui solicitações de mentoria recebidas.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Solicitações Enviadas -->
+                                <div class="tab-pane fade" id="pills-enviadas" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mentor</th>
+                                                    <th>Data</th>
+                                                    <th>Horário</th>
+                                                    <th>Assunto</th>
+                                                    <th>Status</th>
+                                                    <th>Ações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="solicitacao : ${solicitacoesEnviadas}">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Mentor">
+                                                            <div>
+                                                                <div th:text="${solicitacao.nomeMentor}">Nome do Mentor</div>
+                                                                <div class="text-muted small" th:text="${solicitacao.emailMentor}">email@exemplo.com</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td th:text="${solicitacao.data}">01/01/2025</td>
+                                                    <td th:text="${solicitacao.horario}">14:00 - 15:00</td>
+                                                    <td th:text="${solicitacao.assunto}">Orientação de Carreira</td>
+                                                    <td>
+                                                        <span class="badge bg-warning" th:if="${solicitacao.status == 'PENDENTE'}">Pendente</span>
+                                                        <span class="badge bg-success" th:if="${solicitacao.status == 'APROVADA'}">Aprovada</span>
+                                                        <span class="badge bg-danger" th:if="${solicitacao.status == 'RECUSADA'}">Recusada</span>
+                                                    </td>
+                                                    <td>
+                                                        <a th:href="@{/mentoria/detalhes/{id}(id=${solicitacao.id})}" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                                                        <button th:if="${solicitacao.status == 'PENDENTE'}" class="btn btn-sm btn-outline-danger" th:attr="data-id=${solicitacao.id}" data-bs-toggle="modal" data-bs-target="#cancelarModal">Cancelar</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- Mensagem quando não há solicitações enviadas -->
+                                    <div class="text-center mt-3" th:if="${#lists.isEmpty(solicitacoesEnviadas)}">
+                                        <p class="text-muted">Você não possui solicitações de mentoria enviadas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Aprovar Solicitação -->
+            <div class="modal fade" id="aprovarModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Aprovar Solicitação</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Tem certeza que deseja aprovar esta solicitação de mentoria?</p>
+                            <form th:action="@{/mentoria/aprovar}" method="post">
+                                <input type="hidden" id="aprovarId" name="id">
+                                <div class="mb-3">
+                                    <label for="linkReuniao" class="form-label">Link da Reunião (opcional)</label>
+                                    <input type="text" class="form-control" id="linkReuniao" name="linkReuniao" placeholder="https://meet.exemplo.com/abcd">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="observacoes" class="form-label">Observações (opcional)</label>
+                                    <textarea class="form-control" id="observacoes" name="observacoes" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success">Aprovar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Recusar Solicitação -->
+            <div class="modal fade" id="recusarModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Recusar Solicitação</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        

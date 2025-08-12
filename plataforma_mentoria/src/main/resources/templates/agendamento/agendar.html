@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendar Mentoria</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Agendar Mentoria</h1>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Foto do Mentor">
+                            <h3 class="card-title" th:text="${mentor?.nome}">Nome do Mentor</h3>
+                            <div class="text-warning mb-2">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <span class="text-muted ms-1" th:text="${mentor?.avaliacao}">4.5</span>
+                            </div>
+                            <a th:href="@{/mentoria/mentor/{id}(id=${mentor?.id})}" class="btn btn-outline-primary">Ver Perfil Completo</a>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Disponibilidade</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="disp : ${disponibilidades}">
+                                    <span th:text="${disp.diaSemana}">Segunda-feira</span>
+                                    <span>
+                                        <span th:text="${disp.horaInicio}">09:00</span> - 
+                                        <span th:text="${disp.horaFim}">11:00</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Informações do Agendamento</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/agendamento/agendar}" method="post">
+                                <input type="hidden" name="mentorId" th:value="${mentor?.id}">
+                                
+                                <div class="mb-3">
+                                    <label for="data" class="form-label">Data da Mentoria</label>
+                                    <input type="date" class="form-control" id="data" name="data" required min="2025-08-12">
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="horarioInicio" class="form-label">Horário de Início</label>
+                                        <input type="time" class="form-control" id="horarioInicio" name="horarioInicio" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="horarioFim" class="form-label">Horário de Término</label>
+                                        <input type="time" class="form-control" id="horarioFim" name="horarioFim" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="assunto" class="form-label">Assunto da Mentoria</label>
+                                    <input type="text" class="form-control" id="assunto" name="assunto" required placeholder="Ex: Orientação de Carreira, Dúvidas sobre Tecnologia, etc.">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="descricao" class="form-label">Descrição detalhada</label>
+                                    <textarea class="form-control" id="descricao" name="descricao" rows="5" placeholder="Descreva com detalhes o que você gostaria de abordar nesta mentoria..."></textarea>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="concordo" name="concordo" required>
+                                    <label class="form-check-label" for="concordo">
+                                        Concordo com as <a href="#" data-bs-toggle="modal" data-bs-target="#regrasModal">regras de agendamento</a>
+                                    </label>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Solicitar Agendamento</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Regras de Agendamento -->
+            <div class="modal fade" id="regrasModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Regras de Agendamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>Antes de agendar uma mentoria, atente-se às seguintes regras:</h6>
+                            <ul>
+                                <li>O agendamento deve ser feito com pelo menos 24 horas de antecedência.</li>
+                                <li>Cancelamentos devem ser feitos com no mínimo 12 horas de antecedência.</li>
+                                <li>A duração máxima de uma mentoria é de 1 hora.</li>
+                                <li>Após a mentoria, você será convidado a fornecer um feedback.</li>
+                                <li>O não comparecimento sem cancelamento prévio poderá resultar em restrições para agendamentos futuros.</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

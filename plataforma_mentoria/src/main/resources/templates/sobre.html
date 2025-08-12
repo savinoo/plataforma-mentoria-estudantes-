@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sobre</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Sobre a Plataforma de Mentoria</h1>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <h3>Nossa Missão</h3>
+                    <p>A Plataforma de Mentoria foi criada com o objetivo de conectar estudantes a mentores experientes, facilitando o acesso à orientação acadêmica e profissional de qualidade.</p>
+                    
+                    <h3 class="mt-4">Como Funciona</h3>
+                    <p>Nossa plataforma permite que estudantes encontrem mentores especializados em diversas áreas do conhecimento. Após encontrar um mentor adequado às suas necessidades, o estudante pode agendar sessões de mentoria e receber orientação personalizada.</p>
+                    
+                    <h3 class="mt-4">Benefícios</h3>
+                    <ul>
+                        <li>Acesso a mentores qualificados e experientes</li>
+                        <li>Flexibilidade de agendamento</li>
+                        <li>Orientação personalizada</li>
+                        <li>Desenvolvimento de habilidades profissionais e acadêmicas</li>
+                        <li>Expansão de rede de contatos profissionais</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Contato</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Email:</strong> contato@plataformamentoria.com</p>
+                            <p><strong>Telefone:</strong> (11) 1234-5678</p>
+                            <hr>
+                            <h5>Siga-nos nas redes sociais</h5>
+                            <div class="d-flex justify-content-around mt-3">
+                                <a href="#" class="btn btn-outline-primary">Facebook</a>
+                                <a href="#" class="btn btn-outline-info">Twitter</a>
+                                <a href="#" class="btn btn-outline-danger">Instagram</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

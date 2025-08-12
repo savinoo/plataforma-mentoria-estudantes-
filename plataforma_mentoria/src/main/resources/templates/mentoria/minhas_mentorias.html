@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Mentorias</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Minhas Mentorias</h1>
+            
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="mentor-tab" data-bs-toggle="tab" data-bs-target="#mentor" type="button" role="tab">Como Mentor</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="mentorado-tab" data-bs-toggle="tab" data-bs-target="#mentorado" type="button" role="tab">Como Mentorado</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Mentorias como Mentor -->
+                <div class="tab-pane fade show active" id="mentor" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Mentorado</th>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Assunto</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="mentoria : ${mentoriasComoMentor}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Mentorado">
+                                                    <div>
+                                                        <div th:text="${mentoria.nomeMentorado}">Nome do Mentorado</div>
+                                                        <div class="text-muted small" th:text="${mentoria.emailMentorado}">email@exemplo.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td th:text="${mentoria.data}">01/01/2025</td>
+                                            <td th:text="${mentoria.horario}">14:00 - 15:00</td>
+                                            <td th:text="${mentoria.assunto}">Orientação de Carreira</td>
+                                            <td>
+                                                <span class="badge bg-success" th:if="${mentoria.status == 'CONCLUIDA'}">Concluída</span>
+                                                <span class="badge bg-primary" th:if="${mentoria.status == 'AGENDADA'}">Agendada</span>
+                                                <span class="badge bg-danger" th:if="${mentoria.status == 'CANCELADA'}">Cancelada</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a th:href="@{/mentoria/detalhes/{id}(id=${mentoria.id})}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                                    <button th:if="${mentoria.status == 'AGENDADA'}" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelarModal" th:attr="data-id=${mentoria.id}">Cancelar</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mensagem quando não há mentorias como mentor -->
+                            <div class="text-center mt-3" th:if="${#lists.isEmpty(mentoriasComoMentor)}">
+                                <p class="text-muted">Você não possui mentorias como mentor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mentorias como Mentorado -->
+                <div class="tab-pane fade" id="mentorado" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Mentor</th>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Assunto</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="mentoria : ${mentoriasComoMentorado}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Foto do Mentor">
+                                                    <div>
+                                                        <div th:text="${mentoria.nomeMentor}">Nome do Mentor</div>
+                                                        <div class="text-muted small" th:text="${mentoria.emailMentor}">email@exemplo.com</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td th:text="${mentoria.data}">01/01/2025</td>
+                                            <td th:text="${mentoria.horario}">14:00 - 15:00</td>
+                                            <td th:text="${mentoria.assunto}">Orientação de Carreira</td>
+                                            <td>
+                                                <span class="badge bg-success" th:if="${mentoria.status == 'CONCLUIDA'}">Concluída</span>
+                                                <span class="badge bg-primary" th:if="${mentoria.status == 'AGENDADA'}">Agendada</span>
+                                                <span class="badge bg-danger" th:if="${mentoria.status == 'CANCELADA'}">Cancelada</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a th:href="@{/mentoria/detalhes/{id}(id=${mentoria.id})}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                                    <a th:if="${mentoria.status == 'CONCLUIDA' && !mentoria.avaliada}" th:href="@{/feedback/avaliar/{id}(id=${mentoria.id})}" class="btn btn-sm btn-outline-warning">Avaliar</a>
+                                                    <button th:if="${mentoria.status == 'AGENDADA'}" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelarModal" th:attr="data-id=${mentoria.id}">Cancelar</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mensagem quando não há mentorias como mentorado -->
+                            <div class="text-center mt-3" th:if="${#lists.isEmpty(mentoriasComoMentorado)}">
+                                <p class="text-muted">Você não possui mentorias como mentorado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para Cancelar Mentoria -->
+            <div class="modal fade" id="cancelarModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Cancelar Mentoria</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Tem certeza que deseja cancelar esta mentoria?</p>
+                            <form th:action="@{/agendamento/cancelar}" method="post">
+                                <input type="hidden" id="agendamentoId" name="agendamentoId">
+                                <div class="mb-3">
+                                    <label for="motivo" class="form-label">Motivo do cancelamento (opcional)</label>
+                                    <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                            <button type="button" class="btn btn-danger">Confirmar Cancelamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

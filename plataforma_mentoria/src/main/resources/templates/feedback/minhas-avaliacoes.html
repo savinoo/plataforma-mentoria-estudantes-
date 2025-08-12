@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Avaliações</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Minhas Avaliações</h1>
+            
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="recebidas-tab" data-bs-toggle="tab" data-bs-target="#recebidas" type="button" role="tab">Avaliações Recebidas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="feitas-tab" data-bs-toggle="tab" data-bs-target="#feitas" type="button" role="tab">Avaliações Realizadas</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Avaliações Recebidas -->
+                <div class="tab-pane fade show active" id="recebidas" role="tabpanel">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="flex-shrink-0 text-center me-4">
+                                    <h2 class="mb-0">4.5</h2>
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                    </div>
+                                    <div class="text-muted small">23 avaliações</div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-muted small me-2">5</div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-muted small me-2">4</div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-muted small me-2">3</div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 5%" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-muted small me-2">2</div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 3%" aria-valuenow="3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-muted small me-2">1</div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 2%" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de avaliações recebidas -->
+                    <div class="card mb-3" th:each="avaliacao : ${avaliacoesRecebidas}">
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <img src="https://via.placeholder.com/60" class="rounded-circle me-3" alt="Foto do Avaliador">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0" th:text="${avaliacao.nomeAvaliador}">Nome do Avaliador</h5>
+                                        <span class="text-muted" th:text="${avaliacao.data}">01/01/2025</span>
+                                    </div>
+                                    <div class="text-warning mb-2">
+                                        <i class="bi bi-star-fill" th:each="i : ${#numbers.sequence(1, avaliacao.nota)}"></i>
+                                    </div>
+                                    <p class="mb-0" th:text="${avaliacao.comentario}">Comentário sobre a mentoria recebida.</p>
+                                    
+                                    <!-- Resposta à avaliação -->
+                                    <div class="mt-3 p-3 bg-light rounded" th:if="${avaliacao.resposta}">
+                                        <p class="mb-1"><strong>Sua resposta:</strong></p>
+                                        <p class="mb-0" th:text="${avaliacao.resposta}">Resposta ao comentário do avaliador.</p>
+                                    </div>
+                                    
+                                    <!-- Form para responder (se ainda não respondeu) -->
+                                    <div class="mt-3" th:unless="${avaliacao.resposta}">
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" th:attr="data-bs-target='#responder-'+${avaliacao.id}">Responder</button>
+                                        <div class="collapse mt-3" th:id="'responder-'+${avaliacao.id}">
+                                            <form th:action="@{/feedback/responder}" method="post">
+                                                <input type="hidden" name="avaliacaoId" th:value="${avaliacao.id}">
+                                                <div class="mb-3">
+                                                    <textarea class="form-control" name="resposta" rows="3" placeholder="Escreva sua resposta..." required></textarea>
+                                                </div>
+                                                <div class="text-end">
+                                                    <button type="submit" class="btn btn-primary">Enviar Resposta</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center text-muted small">
+                                <div>
+                                    <span>Mentoria: </span>
+                                    <span th:text="${avaliacao.assuntoMentoria}">Orientação de Carreira</span>
+                                </div>
+                                <div>
+                                    <span th:text="${avaliacao.dataMentoria}">01/01/2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mensagem quando não há avaliações recebidas -->
+                    <div class="text-center" th:if="${#lists.isEmpty(avaliacoesRecebidas)}">
+                        <div class="alert alert-info">
+                            <p class="mb-0">Você ainda não recebeu avaliações.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Avaliações Feitas -->
+                <div class="tab-pane fade" id="feitas" role="tabpanel">
+                    <div class="car

@@ -1,23 +1,50 @@
-<!-- gere um html exemplo de pagina inicial -->
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Página Inicial</title>
+    <title>Home</title>
 </head>
 <body>
-    <header>
-        <h1>Bem-vindo à Plataforma de Mentoria</h1>
-    </header>
-    <main>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
         <section>
-            <h2>Sobre Nós</h2>
-            <p>Esta é uma plataforma dedicada a conectar mentores e estudantes.</p>
+            <div class="jumbotron bg-light p-5 rounded">
+                <h1 class="display-4">Bem-vindo à Plataforma de Mentoria!</h1>
+                <p class="lead">Conectando estudantes a mentores experientes para orientação acadêmica e de carreira.</p>
+                <hr class="my-4">
+                <p>Encontre o mentor ideal para ajudar no seu desenvolvimento profissional e acadêmico.</p>
+                <a class="btn btn-primary btn-lg" th:href="@{/mentoria/buscar}" role="button">Buscar Mentores</a>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">Encontre Mentores</h3>
+                            <p class="card-text">Acesse nossa ampla rede de mentores qualificados das mais diversas áreas acadêmicas e profissionais.</p>
+                            <a th:href="@{/mentoria/buscar}" class="btn btn-outline-primary">Buscar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">Agende Mentorias</h3>
+                            <p class="card-text">Marque sessões de mentoria de acordo com sua disponibilidade e necessidades específicas.</p>
+                            <a th:href="@{/agendamento/calendario}" class="btn btn-outline-primary">Calendário</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">Torne-se Mentor</h3>
+                            <p class="card-text">Compartilhe seu conhecimento e experiência ajudando estudantes em suas jornadas acadêmicas.</p>
+                            <a th:href="@{/usuario/cadastro}" class="btn btn-outline-primary">Cadastre-se</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
-    </main>
-    <footer>
-        <p>&copy; 2023 Plataforma de Mentoria</p>
-    </footer>
+    </div>
 </body>
 </html>
