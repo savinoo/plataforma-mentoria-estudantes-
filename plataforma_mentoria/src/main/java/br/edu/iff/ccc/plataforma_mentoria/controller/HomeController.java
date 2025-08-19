@@ -11,9 +11,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
 
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("title", "Plataforma de Mentoria");
-        return "home";
+    public String home() {
+        // Delegate to MainViewController for the principal route
+        return "redirect:/principal";
     }
     
     @GetMapping("/sobre")

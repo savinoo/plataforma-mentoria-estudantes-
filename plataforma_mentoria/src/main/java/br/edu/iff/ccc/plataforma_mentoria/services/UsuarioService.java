@@ -1,6 +1,7 @@
 package br.edu.iff.ccc.plataforma_mentoria.services;
 
 import br.edu.iff.ccc.plataforma_mentoria.entities.Usuario;
+import br.edu.iff.ccc.plataforma_mentoria.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +9,11 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    // Aqui injetaríamos o repositório com @Autowired
-    // private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     public Usuario criarUsuario(String nome, String email, String senha, String telefone, 
                               String sobre, Usuario.TipoUsuario tipoUsuario) {
@@ -22,8 +26,7 @@ public class UsuarioService {
         usuario.setTipoUsuario(tipoUsuario);
         usuario.setStatus(Usuario.StatusUsuario.ATIVO);
         
-        // return usuarioRepository.save(usuario);
-        return usuario; // Simulação
+    return usuarioRepository.save(usuario);
     }
 
     public Usuario atualizarUsuario(Usuario usuario, String nome, String email, 
@@ -33,13 +36,12 @@ public class UsuarioService {
         usuario.setTelefone(telefone);
         usuario.setSobre(sobre);
         
-        // return usuarioRepository.save(usuario);
-        return usuario; // Simulação
+    return usuarioRepository.save(usuario);
     }
     
     public void alterarSenha(Usuario usuario, String novaSenha) {
         usuario.setSenha(novaSenha); // Em produção, usar hash
-        // usuarioRepository.save(usuario);
+    usuarioRepository.save(usuario);
     }
 
     public void excluirUsuario(Usuario usuario) {
@@ -47,33 +49,22 @@ public class UsuarioService {
     }
 
     public Optional<Usuario> buscarPorId(Long id) {
-        // return usuarioRepository.findById(id);
-        
-        // Simulação
-        if (id == 1L) {
-            Usuario usuario = new Usuario();
-            usuario.setId(1L);
-            usuario.setNome("João Mentor");
-            usuario.setEmail("joao@exemplo.com");
-            usuario.setTipoUsuario(Usuario.TipoUsuario.MENTOR);
-            usuario.setStatus(Usuario.StatusUsuario.ATIVO);
-            return Optional.of(usuario);
-        }
-        return Optional.empty();
+        return usuarioRepository.findById(id);
     }
 
     public List<Usuario> buscarTodos() {
-        // return usuarioRepository.findAll();
-        return List.of(); // Simulação
+    return usuarioRepository.findAll();
     }
 
     public List<Usuario> buscarMentores() {
-        // return usuarioRepository.findByTipoUsuario(Usuario.TipoUsuario.MENTOR);
-        return List.of(); // Simulação
+    return usuarioRepository.findByTipoUsuario(Usuario.TipoUsuario.MENTOR);
     }
     
     public boolean emailJaExiste(String email) {
-        // return usuarioRepository.existsByEmail(email);
-        return false; // Simulação
+        return usuarioRepository.existsByEmail(email);
+    }
+    
+    public Optional<Usuario> buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }

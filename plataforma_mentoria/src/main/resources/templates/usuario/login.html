@@ -14,14 +14,10 @@
                             <h3 class="mb-0">Login</h3>
                         </div>
                         <div class="card-body">
-                            <div th:if="${param.error}" class="alert alert-danger">
-                                Email ou senha inválidos.
-                            </div>
-                            <div th:if="${param.logout}" class="alert alert-success">
-                                Você foi desconectado com sucesso.
-                            </div>
+                            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
                             
-                            <form th:action="@{/login}" method="post">
+                            <form th:action="@{/usuario/login}" method="post">
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="username" name="username" required autofocus>
