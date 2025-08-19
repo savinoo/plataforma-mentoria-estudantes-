@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Foto de Perfil">
+                            <h3 class="card-title" th:text="${usuario?.nome}">Nome do Usuário</h3>
+                            <p class="text-muted" th:text="${usuario?.tipoUsuario}">Tipo de Perfil</p>
+                            <button class="btn btn-sm btn-outline-primary">Alterar Foto</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Menu</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a href="#info" class="list-group-item list-group-item-action active" data-bs-toggle="pill">Informações Pessoais</a>
+                            <a href="#seguranca" class="list-group-item list-group-item-action" data-bs-toggle="pill">Segurança</a>
+                            <a th:if="${usuario?.tipoUsuario == 'MENTOR'}" href="#especialidades" class="list-group-item list-group-item-action" data-bs-toggle="pill">Especialidades</a>
+                            <a th:if="${usuario?.tipoUsuario == 'MENTOR'}" href="#disponibilidade" class="list-group-item list-group-item-action" data-bs-toggle="pill">Disponibilidade</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="tab-content">
+                        <!-- Informações Pessoais -->
+                        <div class="tab-pane fade show active" id="info">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Informações Pessoais</h5>
+                                    <button class="btn btn-sm btn-primary" id="editInfoBtn">Editar</button>
+                                </div>
+                                <div class="card-body">
+                                    <form th:action="@{/usuario/atualizar}" method="post">
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-3 col-form-label">Nome:</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="nome" th:value="${usuario?.nome}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-3 col-form-label">Email:</label>
+                                            <div class="col-sm-9">
+                                                <input type="email" class="form-control" name="email" th:value="${usuario?.email}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-3 col-form-label">Telefone:</label>
+                                            <div class="col-sm-9">
+                                                <input type="tel" class="form-control" name="telefone" th:value="${usuario?.telefone}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-3 col-form-label">Sobre mim:</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" name="sobre" rows="5" disabled th:text="${usuario?.sobre}"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="text-end" style="display: none;" id="saveInfoBtns">
+                                            <button type="button" class="btn btn-secondary me-2" id="cancelInfoBtn">Cancelar</button>
+                                            <button type="submit" class="btn btn-success">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Segurança -->
+                        <div class="tab-pane fade" id="seguranca">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Alterar Senha</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form th:action="@{/usuario/alterar-senha}" method="post">
+                                        <div class="mb-3">
+                                            <label for="senhaAtual" class="form-label">Senha Atual</label>
+                                            <input type="password" class="form-control" id="senhaAtual" name="senhaAtual" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="novaSenha" class="form-label">Nova Senha</label>
+                                            <input type="password" class="form-control" id="novaSenha" name="novaSenha" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmarSenha" class="form-label">Confirmar Nova Senha</label>
+                                            <input type="password" class="form-control" id="confirmarSenha" name="confirmarSenha" required>
+                                        </div>
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Especialidades (apenas para mentores) -->
+                        <div class="tab-pane fade" id="especialidades" th:if="${usuario?.tipoUsuario == 'MENTOR'}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Minhas Especialidades</h5>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addEspecialidadeModal">Adicionar</button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group">
+                                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" th:each="esp : ${especialidades}">
+                                            <div>
+                                                <h6 class="mb-1" th:text="${esp.nome}">Nome da Especialidade</h6>
+                                                <p class="mb-1 text-muted" th:text="${esp.descricao}">Descrição da especialidade</p>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger">Remover</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Disponibilidade (apenas para mentores) -->
+                        <div class="tab-pane fade" id="disponibilidade" th:if="${usuario?.tipoUsuario == 'MENTOR'}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Minha Disponibilidade</h5>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addDisponibilidadeModal">Adicionar</button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Dia da Semana</th>
+                                                    <th>Horário Início</th>
+                                                    <th>Horário Fim</th>
+                                                    <th>Ações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="disp : ${disponibilidades}">
+                                                    <td th:text="${disp.diaSemana}">Segunda-feira</td>
+                                                    <td th:text="${disp.horaInicio}">09:00</td>
+                                                    <td th:text="${disp.horaFim}">11:00</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-danger">Remover</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para adicionar especialidade -->
+            <div class="modal fade" id="addEspecialidadeModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Adicionar Especialidade</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/usuario/adicionar-especialidade}" method="post">
+                                <div class="mb-3">
+                                    <label for="nomeEspecialidade" class="form-label">Nome da Especialidade</label>
+                                    <input type="text" class="form-control" id="nomeEspecialidade" name="nome" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descricaoEspecialidade" class="form-label">Descrição</label>
+                                    <textarea class="form-control" id="descricaoEspecialidade" name="descricao" rows="3" required></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal para adicionar disponibilidade -->
+            <div class="modal fade" id="addDisponibilidadeModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Adicionar Disponibilidade</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/usuario/adicionar-disponibilidade}" method="post">
+                                <div class="mb-3">
+                                    <label for="diaSemana" class="form-label">Dia da Semana</label>
+                                    <select class="form-select" id="diaSemana" name="diaSemana" required>
+                                        <option value="">Selecione um dia</option>
+                                        <option value="SEGUNDA">Segunda-feira</option>
+                                        <option value="TERCA">Terça-feira</option>
+                                        <option value="QUARTA">Quarta-feira</option>
+                                        <option value="QUINTA">Quinta-feira</option>
+                                        <option value="SEXTA">Sexta-feira</option>
+                                        <option value="SABADO">Sábado</option>
+                                        <option value="DOMINGO">Domingo</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="horaInicio" class="form-label">Horário de Início</label>
+                                    <input type="time" class="form-control" id="horaInicio" name="horaInicio" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="horaFim" class="form-label">Horário de Término</label>
+                                    <input type="time" class="form-control" id="horaFim" name="horaFim" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

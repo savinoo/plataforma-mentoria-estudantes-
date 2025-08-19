@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendário de Mentorias</title>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <div class="row mb-4">
+                <div class="col">
+                    <h1>Calendário de Mentorias</h1>
+                </div>
+                <div class="col-auto">
+                    <a th:href="@{/mentoria/buscar}" class="btn btn-primary">Agendar Nova Mentoria</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+            
+            <!-- Modal de Detalhes do Evento -->
+            <div class="modal fade" id="eventoModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="eventoTitulo">Detalhes da Mentoria</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <strong>Assunto:</strong>
+                                <p id="eventoAssunto"></p>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Data e Horário:</strong>
+                                <p id="eventoDataHora"></p>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Participante:</strong>
+                                <p id="eventoParticipante"></p>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Status:</strong>
+                                <p id="eventoStatus"></p>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Link da Reunião:</strong>
+                                <p id="eventoLink"></p>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Descrição:</strong>
+                                <p id="eventoDescricao"></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-danger" id="btnCancelar">Cancelar Mentoria</button>
+                            <button type="button" class="btn btn-primary" id="btnReagendar">Reagendar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal de Reagendamento -->
+            <div class="modal fade" id="reagendarModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reagendar Mentoria</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/agendamento/reagendar}" method="post">
+                                <input type="hidden" id="reagendarId" name="agendamentoId">
+                                <div class="mb-3">
+                                    <label for="novaData" class="form-label">Nova Data</label>
+                                    <input type="date" class="form-control" id="novaData" name="novaData" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="novoHorarioInicio" class="form-label">Novo Horário de Início</label>
+                                    <input type="time" class="form-control" id="novoHorarioInicio" name="novoHorarioInicio" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="novoHorarioFim" class="form-label">Novo Horário de Término</label>
+                                    <input type="time" class="form-control" id="novoHorarioFim" name="novoHorarioFim" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Confirmar Reagendamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Scripts do FullCalendar -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.min.js'></script>
+    
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            
+            // Obter os agendamentos do Thymeleaf
+            var agendamentos = /*[[${agendamentos}]]*/ [];
+            
+            // Inicializar eventos do calendário
+            var eventos = [];
+            
+            // Se tivermos dados reais, vamos usá-los
+            if (agendamentos && agendamentos.length > 0) {
+                agendamentos.forEach(function(agendamento) {
+                    eventos.push({
+                        id: agendamento.id,
+                        title: agendamento.assunto,
+                        start: agendamento.dataHoraInicio,
+                        end: agendamento.dataHoraFim,
+                        extendedProps: {
+                            participante: agendamento.tipoParticipante === 'MENTOR' ? agendamento.nomeMentorado : agendamento.nomeMentor,
+                            status: agendamento.status,
+                            descricao: agendamento.descricao,
+                            link: agendamento.linkReuniao
+                        },
+                        backgroundColor: getStatusColor(agendamento.status)
+                    });
+                });
+            } else {
+                // Dados fictícios para visualização
+                eventos = [
+                    {
+                        id: 1,
+                        title: 'Mentoria: Orientação de Carreira',
+                        start: '2025-08-13T10:00:00',
+                        end: '2025-08-13T11:00:00',
+                        extendedProps: {
+                            participante: 'João Silva',
+                            status: 'AGENDADA',
+                            descricao: 'Discussão sobre oportunidades de carreira em desenvolvimento web.',
+                            link: 'https://meet.google.com/abc-defg-hij'
+                        },
+                        backgroundColor: '#0d6efd'
+                    },
+                    {
+                        id: 2,
+                        title: 'Mentoria: Dúvidas de Programação',
+                        start: '2025-08-15T14:00:00',
+                        end: '2025-08-15T15:00:00',
+                        extendedProps: {
+                            participante: 'Maria Oliveira',
+                            status: 'AGENDADA',
+                            descricao: 'Resolução de dúvidas sobre algoritmos e estruturas de dados.',
+                            link: 'https://meet.google.com/xyz-abcd-efg'
+                        },
+                        backgroundColor: '#0d6efd'
+                    },
+                    {
+                        id: 3,
+                        title: 'Mentoria: Revisão de CV',
+                        start: '2025-08-10T16:00:00',
+                        end: '2025-08-10T17:00:00',
+                        extendedProps: {
+                            participante: 'Pedro Santos',
+                            status: 'CONCLUIDA',
+                            descricao: 'Revisão e feedback do currículo para vagas de desenvolvedor.',
+                            link: 'https://meet.google.com/123-456-789'
+                        },
+                        backgroundColor: '#198754'
+                    }
+                ];
+            }
+            
+            // Inicializar o calendário
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'pt-br',
+                events: eventos,
+                eventClick: function(info) {
+                    showEventDetails(info.event);
+                }
+            });
+            
+            calendar.render();
+            
+            // Função para mostrar detalhes do evento no modal
+            function showEventDetails(event) {
+                document.getElementById('eventoTitulo').textContent = event.title;
+                document.getElementById('eventoAssunto').textContent = event.title.replace('Mentoria: ', '');
+                
+                var start = new Date(event.start);
+                var end = new Date(event.end);
+                var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                var timeOptions = { hour: '2-digit', minute: '2-digit' };
+                
+                document.getElementById('eventoDataHora').textContent = 
+                    start.toLocaleDateString('pt-BR', dateOptions) + ', ' +
+                    start.toLocaleTimeString('pt-BR', timeOptions) + ' até ' +
+                    end.toLocaleTimeString('pt-BR', timeOptions);
+                
+                document.getElementById('eventoParticipante').textContent = event.extendedProps.participante;
+                
+                var statusText = '';
+                switch(event.extendedProps.status) {
+                    case 'AGENDADA':
+                        statusText = 'Agendada';
+                        break;
+                    case 'CONCLUIDA':
+                        statusText = 'Concluída';
+                        break;
+                    case 'CANCELADA':
+                        statusText = 'Cancelada';
+                        break;
+                    default:
+                        statusText = event.extendedProps.status;
+                }
+                document.getElementById('eventoStatus').textContent = statusText;
+                
+                var linkElement = document.getElementById('eventoLink');
+                if (event.extendedProps.link) {
+                    linkElement.innerHTML = '<a href="' + event.extendedProps.link + '" target="_blank">' + event.extendedProps.link + '</a>';
+                } else {
+                    linkElement.textContent = 'Nenhum link disponível';
+                }
+                
+                document.getElementById('eventoDescricao').textContent = event.extendedProps.descricao || 'Sem descrição';
+                
+                // Configurar botões de ação
+                var btnCancelar = document.getElementById('btnCancelar');
+                var btnReagendar = document.getElementById('btnReagendar');
+                
+                if (event.extendedProps.status === 'AGENDADA') {
+                    btnCancelar.style.display = 'block';
+                    btnReagendar.style.display = 'block';
+                    
+                    btnCancelar.onclick = function() {
+                        $('#eventoModal').modal('hide');
+                        document.getElementById('agendamentoId').value = event.id;
+                        $('#cancelarModal').modal('show');
+                    };
+                    
+                    btnReagendar.onclick = function() {
+                        $('#eventoModal').modal('hide');
+                        document.getElementById('reagendarId').value = event.id;
+                        $('#reagendarModal').modal('show');
+                    };
+                } else {
+                    btnCancelar.style.display = 'none';
+                    btnReagendar.style.display = 'none';
+                }
+                
+                var eventoModal = new bootstrap.Modal(document.getElementById('eventoModal'));
+                eventoModal.show();
+            }
+            
+            // Função para determinar a cor do evento com base no status
+            function getStatusColor(status) {
+                switch(status) {
+                    case 'AGENDADA':
+                        return '#0d6efd'; // Azul (primary)
+                    case 'CONCLUIDA':
+                        return '#198754'; // Verde (success)
+                    case 'CANCELADA':
+                        return '#dc3545'; // Vermelho (danger)
+                    default:
+                        return '#6c757d'; // Cinza (secondary)
+                }
+            }
+        });
+    </script>
+</body>
+</html>

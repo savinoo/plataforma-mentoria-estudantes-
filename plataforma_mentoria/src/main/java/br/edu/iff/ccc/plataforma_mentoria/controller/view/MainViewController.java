@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @RequestMapping(path="/principal")
 public class MainViewController {
-    @GetMapping()
+    @GetMapping
     public String getHomePage() {
-    return "home.html";
+        // Renderiza a view home (sem extensão)
+        return "home";
     }
     
 }

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Avaliar Mentoria</title>
+</head>
+<body>
+    <div th:replace="~{layouts/main :: body(content=~{::section})}">
+        <section>
+            <h1 class="mb-4">Avaliar Mentoria</h1>
+            
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Informações da Mentoria</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://via.placeholder.com/70" class="rounded-circle me-3" alt="Foto do Mentor">
+                                        <div>
+                                            <h5 class="mb-1" th:text="${mentoria?.nomeMentor}">Nome do Mentor</h5>
+                                            <p class="text-muted mb-0" th:text="${mentoria?.emailMentor}">email@exemplo.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Data:</strong> <span th:text="${mentoria?.data}">01/01/2025</span></p>
+                                    <p><strong>Horário:</strong> <span th:text="${mentoria?.horario}">14:00 - 15:00</span></p>
+                                    <p><strong>Assunto:</strong> <span th:text="${mentoria?.assunto}">Orientação de Carreira</span></p>
+                                </div>
+                            </div>
+                            
+                            <form th:action="@{/feedback/avaliar}" method="post">
+                                <input type="hidden" name="mentoriaId" th:value="${mentoria?.id}">
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Avalie sua experiência com o mentor:</label>
+                                    <div class="rating-stars text-center mb-2">
+                                        <div class="d-flex justify-content-center">
+                                            <div class="rating-group">
+                                                <input class="rating__input rating__input--none" name="nota" id="rating-0" value="0" type="radio" checked>
+                                                <label aria-label="1 star" class="rating__label" for="rating-1">
+                                                    <i class="rating__icon rating__icon--star bi bi-star-fill"></i>
+                                                </label>
+                                                <input class="rating__input" name="nota" id="rating-1" value="1" type="radio">
+                                                <label aria-label="2 stars" class="rating__label" for="rating-2">
+                                                    <i class="rating__icon rating__icon--star bi bi-star-fill"></i>
+                                                </label>
+                                                <input class="rating__input" name="nota" id="rating-2" value="2" type="radio">
+                                                <label aria-label="3 stars" class="rating__label" for="rating-3">
+                                                    <i class="rating__icon rating__icon--star bi bi-star-fill"></i>
+                                                </label>
+                                                <input class="rating__input" name="nota" id="rating-3" value="3" type="radio">
+                                                <label aria-label="4 stars" class="rating__label" for="rating-4">
+                                                    <i class="rating__icon rating__icon--star bi bi-star-fill"></i>
+                                                </label>
+                                                <input class="rating__input" name="nota" id="rating-4" value="4" type="radio">
+                                                <label aria-label="5 stars" class="rating__label" for="rating-5">
+                                                    <i class="rating__icon rating__icon--star bi bi-star-fill"></i>
+                                                </label>
+                                                <input class="rating__input" name="nota" id="rating-5" value="5" type="radio">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="comentario" class="form-label">Seu comentário sobre a mentoria:</label>
+                                    <textarea class="form-control" id="comentario" name="comentario" rows="5" required placeholder="Compartilhe sua experiência com o mentor, o que foi útil, o que poderia melhorar..."></textarea>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+                                    <a th:href="@{/agendamento/historico}" class="btn btn-outline-secondary">Voltar</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <style>
+        .rating-group {
+            display: inline-flex;
+            font-size: 2rem;
+        }
+        
+        .rating__input {
+            position: absolute !important;
+            left: -9999px !important;
+        }
+        
+        .rating__input--none {
+            display: none;
+        }
+        
+        .rating__label {
+            cursor: pointer;
+            padding: 0 0.1em;
+            font-size: 2rem;
+            color: #ddd;
+        }
+        
+        .rating__icon--star {
+            color: #ffc107;
+        }
+        
+        .rating__input:checked ~ .rating__label .rating__icon--star {
+            color: #ddd;
+        }
+        
+        .rating-group:hover .rating__label .rating__icon--star {
+            color: #ffc107;
+        }
+        
+        .rating__input:hover ~ .rating__label .rating__icon--star {
+            color: #ddd;
+        }
+    </style>
+</body>
+</html>
