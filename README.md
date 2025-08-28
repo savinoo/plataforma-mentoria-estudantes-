@@ -1,22 +1,27 @@
 # Plataforma de Mentoria para Estudantes
 
-## Descrição
+## 1. Descrição
 
-O projeto consiste no desenvolvimento de uma plataforma web que conecta alunos mais experientes ou profissionais formados (Mentores) com estudantes que buscam orientação de carreira e acadêmica (Mentorados). O sistema visa facilitar a troca de conhecimento e experiência, auxiliando os mentorados em sua jornada educacional e profissional.
+Este projeto é uma aplicação web que visa conectar estudantes (mentorados) a mentores experientes, que podem ser alunos mais avançados ou profissionais já formados. A plataforma facilitará a troca de conhecimento e experiências, oferecendo orientação de carreira e acadêmica.
 
-## Perfis de Usuário
+## 2. Perfis de Usuário
 
-A plataforma contará com três tipos de perfis principais:
+A plataforma contará com três perfis de usuário distintos:
 
-1.  **Mentorado:** Estudantes em busca de orientação. Podem buscar mentores por área de atuação, disciplina ou habilidades, agendar sessões e avaliar a mentoria recebida.
-2.  **Mentor:** Profissionais ou estudantes experientes dispostos a compartilhar seu conhecimento. Eles podem definir suas áreas de especialidade, disponibilidade e gerenciar os pedidos de mentoria.
-3.  **Administrador:** Responsável pela gestão da plataforma, incluindo a aprovação de cadastros de mentores, moderação de conteúdo e gerenciamento geral do sistema.
+* **Mentorado:** Estudante em busca de orientação para sua carreira ou vida acadêmica. Poderá buscar mentores por área de interesse, agendar sessões de mentoria e avaliar os mentores.
+* **Mentor:** Aluno experiente ou profissional formado que deseja compartilhar seu conhecimento. Poderá criar um perfil detalhado, definir sua disponibilidade e aceitar ou recusar pedidos de mentoria.
+* **Administrador:** Responsável pela gestão da plataforma. Terá acesso a um painel para gerenciar usuários, visualizar relatórios de uso e garantir o bom funcionamento do sistema.
 
-## Funcionalidades Principais (Visão Geral)
+## 3. Tecnologias Utilizadas
 
-* Cadastro e autenticação de usuários (Mentores, Mentorados).
-* Criação e gerenciamento de perfis detalhados.
-* Sistema de busca e filtro para encontrar mentores compatíveis.
-* Sistema de agendamento de sessões de mentoria.
-* Comunicação via chat ou vídeo-conferência (a definir).
-* Sistema de avaliação e feedback.
+* **Backend:** Java com Spring Boot
+* **Frontend:** Thymeleaf e Tailwind CSS (conforme estrutura inicial)
+* **Banco de Dados:** H2 (para ambiente de desenvolvimento)
+* **Build:** Maven
+
+## 4. Como Executar o Projeto
+
+1.  Clone o repositório.
+2.  Certifique-se de ter o Java (versão 17 ou superior) e o Maven instalados.
+3.  Execute o comando `./mvnw spring-boot:run` na raiz do projeto.
+4.  Acesse a aplicação em `http://localhost:8080`.
